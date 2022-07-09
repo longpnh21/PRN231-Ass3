@@ -1,0 +1,91 @@
+﻿@model BusinessObject.Entities.User
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h4>Delete User</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <div>
+            <div class="form-group">
+                <label for="Id" class="control-label">UserId</label>
+                <input readonly id="Id" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="UserName" class="control-label">UserName</label>
+                <input id="UserName" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="Email" class="control-label">Email</label>
+                <input id="Email" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="FirstName" class="control-label">FirstName</label>
+                <input id="FirstName" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="LastName" class="control-label">LastName</label>
+                <input id="LastName" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input readonly id="DeleteButton" type="submit" value="Delete" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    <a href="/Users">Back to List</a>
+</div>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script type="text/javascript">
+    let options = '';  
+    $(document).ready(function() {
+        GetUser();
+   
+        function GetUser() {
+            let params = new URLSearchParams(document.location.search);
+            let userId = params.get("id");
+            
+        
+            $.ajax({
+                url: "http://localhost:25774/api/users/" + userId,
+                type: "get",
+                contentType: "application/json",
+                success: function(result, status, xhr) {
+                   $("#Id").val(result["id"]);
+                    $("#UserName").val(result["userName"]);
+                    $("#Email").val(result["email"]);
+                    $("#FirstName").val(result["firstName"]);
+                    $("#LastName").val(result["lastName"]);
+                },
+                error: function(xhr, status, error) {
+                    console.log(xhr)
+                }
+            });
+        }
+
+        $("#DeleteButton").click(function(e) {
+            let params = new URLSearchParams(document.location.search);
+            let userId = params.get("id");
+
+            $.ajax({
+                url: "http://localhost:25774/api/users/" + userId,
+                type: "delete",
+                success: function(result, status, xhr) {
+                    window.location.href = "/Users";
+                },
+                error: function(xhr, status, error) {
+                    console.log(xhr);
+                }
+            });
+        });
+
+    });
+</script>
+    @section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

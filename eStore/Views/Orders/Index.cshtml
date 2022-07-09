@@ -1,0 +1,48 @@
+﻿<div class="container-fluid">
+    <h2>Order List</h2>
+    <table class="table table-sm table-striped table-bordered m-2">
+        <thead>
+            <tr>
+                <th>OrderId</th>
+                <th>MemberId</th>
+                <th>OrderDate</th>
+                <th>RequiredDate</th>
+                <th>ShippedDate</th>
+                <th>Freight</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        ShowAllOrders();
+
+        function ShowAllOrders() {
+            $("table tbody").html("");
+            $.ajax({
+                url: "http://localhost:25774/api/orders",
+                type: "get",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(result, status, xhr) {
+                    $.each(result, function(index, value) {
+                        $("tbody").append($("<tr>"));
+                        appendElement = $("tbody tr").last();
+                        appendElement.append($("<td>").html(value["OrderId"]));
+                        appendElement.append($("<td>").html(value["MemberId"]));
+                        appendElement.append($("<td>").html(value["OrderDate"]));
+                        appendElement.append($("<td>").html(value["RequiredDate"]));
+                        appendElement.append($("<td>").html(value["ShippedDate"]));
+                        appendElement.append($("<td>").html(value["Freight"]));
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.log(xhr);
+                }
+            });
+        }
+    });
+</script>

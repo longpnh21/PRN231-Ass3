@@ -1,0 +1,79 @@
+﻿@model BusinessObject.Entities.User
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h4>Create User</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <div>
+            <div class="form-group">
+                <label for="UserName" class="control-label">UserName</label>
+                <input id="UserName" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="Email" class="control-label">Email</label>
+                <input id="Email" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="Password" class="control-label">Password</label>
+                <input type="password" id="Password" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="FirstName" class="control-label">FirstName</label>
+                <input id="FirstName" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="LastName" class="control-label">LastName</label>
+                <input id="LastName" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input id="CreateButton" type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    <a href="/Products">Back to List</a>
+</div>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $('#CategoryId').html('');  
+    let options = '';  
+    $(document).ready(function() {
+   
+        $("#CreateButton").click(function(e) {
+            let params = new URLSearchParams(document.location.search);
+            let productId = params.get("id");
+
+            data = {
+                UserName: $("#UserName").val(),
+                Email: $("#Email").val(),
+                Password: $("#Password").val(),
+                FirstName: $("#FirstName").val(),
+                LastName: $("#LastName").val()
+            }
+
+            $.ajax({
+                url: "http://localhost:25774/api/users/",
+                type: "post",
+                data: JSON.stringify(data),
+                contentType: "application/json",
+                success: function(result, status, xhr) {
+                    window.location.href = "/Users";
+                },
+                error: function(xhr, status, error) {
+                    console.log(xhr);
+                }
+            });
+        });
+
+    });
+</script>
+    @section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

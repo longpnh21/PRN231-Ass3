@@ -1,0 +1,52 @@
+﻿<div class="container-fluid">
+    <h2>Product List</h2>
+    <table class="table table-sm table-striped table-bordered m-2">
+        <thead>
+            <tr>
+                <th>ProductId</th>
+                <th>Category</th>
+                <th>Product Name</th>
+                <th>Weight</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Update</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        ShowAllProducts();
+
+        function ShowAllProducts() {
+            $("table tbody").html("");
+            $.ajax({
+                url: "http://localhost:25774/api/products",
+                type: "get",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(result, status, xhr) {
+                    $.each(result, function(index, value) {
+                        $("tbody").append($("<tr>"));
+                        appendElement = $("tbody tr").last();
+                        appendElement.append($("<td>").html(value["productId"]));
+                        appendElement.append($("<td>").html(value["category"]["categoryId"]));
+                        appendElement.append($("<td>").html(value["productName"]));
+                        appendElement.append($("<td>").html(value["weight"]));
+                        appendElement.append($("<td>").html(value["unitsInStock"]));
+                        appendElement.append($("<td>").html(value["unitPrice"]));
+                        appendElement.append($("<td>").html("<a href=\"/Products/Edit?id=" + value["productId"] + "\"><img src=\"icon/edit.png\" /></a>"));
+                        appendElement.append($("<td>").html("<a href=\"/Products/Delete?id=" + value["productId"] + "\"><img src=\"icon/delete.png\" /></a>"));
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.log(xhr);
+                }
+            });
+        }
+    });
+</script>

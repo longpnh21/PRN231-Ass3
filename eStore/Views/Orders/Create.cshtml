@@ -1,0 +1,93 @@
+﻿@{
+    ViewData["Title"] = "Create";
+}
+
+<h4>Create Order</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <div>
+            <div class="form-group">
+                <label for="MemberId" class="control-label">Member</label>
+                <select id="MemberId" class="form-control">
+                    <options>Select</options>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="OrderDate" class="control-label">OrderDate</label>
+                <input type="date" id="OrderDate" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="RequiredDate" class="control-label">RequiredDate</label>
+                <input type="date" id="RequiredDate" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="ShippedDate" class="control-label">ShippedDate</label>
+                <input type="date" id="ShippedDate" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="Freight" class="control-label">Freight</label>
+                <input type="number" id="Freight" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input id="CreateButton" type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    <a href="/Orders">Back to List</a>
+</div>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $('#MemberId').html('');  
+    let options = '';  
+    $(document).ready(function() {
+        GetUsers();
+   
+        function GetUsers() {    
+            $.ajax({
+                url: "http://localhost:25774/api/users",
+                type: "get",
+                contentType: "application/json",
+                success: function(result, status, xhr) {
+                    $.each(result, function(index, value) {
+                        options += '<option value="' + value["id"] + '">' + value["UserName"] + '</option>';  
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.log(xhr)
+                }
+            });
+        };
+
+        $("#CreateButton").click(function(e) {
+            let params = new URLSearchParams(document.location.search);
+            let orderId = params.get("id");
+
+            data = {
+                MemberId: $("#MemberId").val(),
+                OrderDate: $("#OrderDate").val(),
+                RequiredDate: $("#RequiredDate").val(),
+                ShippedDate: $("#ShippedDate").val(),
+                Freight: $("#Freight").val()
+            }
+
+            $.ajax({
+                url: "http://localhost:25774/api/orders/",
+                type: "post",
+                data: JSON.stringify(data),
+                contentType: "application/json",
+                success: function(result, status, xhr) {
+                    window.location.href = "/Orders";
+                },
+                error: function(xhr, status, error) {
+                    console.log(xhr);
+                }
+            });
+        });
+
+    });
+</script>

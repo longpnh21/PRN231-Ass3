@@ -1,0 +1,98 @@
+﻿@model BusinessObject.Entities.Product
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h4>Delete Product</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <div>
+            <div class="form-group">
+                <label for="Weight" class="control-label">ProductId</label>
+                <input readonly id="ProductId" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="CategoryId" class="control-label">Category</label>
+                <select readonly id="CategoryId" class="form-control"></select>
+            </div>
+            <div class="form-group">
+                <label for="ProductName" class="control-label">ProductName</label>
+                <input readonly id="ProductName" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="Weight" class="control-label">Weight</label>
+                <input readonly id="Weight" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="UnitsInStock" class="control-label">UnitsInStock</label>
+                <input readonly id="UnitsInStock" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="UnitPrice" class="control-label">UnitPrice</label>
+                <input readonly id="UnitPrice" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input readonly id="DeleteButton" type="submit" value="Delete" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    <a href="/Products">Back to List</a>
+</div>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script type="text/javascript">
+    let options = '';  
+    $(document).ready(function() {
+        GetProduct();
+   
+        function GetProduct() {
+            let params = new URLSearchParams(document.location.search);
+            let productId = params.get("id");
+            
+        
+            $.ajax({
+                url: "http://localhost:25774/api/products/" + productId,
+                type: "get",
+                contentType: "application/json",
+                success: function(result, status, xhr) {
+                    $("#ProductId").val(result["productId"]);
+                    $('#CategoryId').html(''); 
+                        options += "<option value=\"" + result["category"]["categoryId"] + "\">" + result["category"]["categoryName"] + "</option>";  
+                        $('#CategoryId').append(options); 
+                    $("#ProductName").val(result["productName"]);
+                    $("#Weight").val(result["weight"]);
+                    $("#UnitsInStock").val(result["unitsInStock"]);
+                    $("#UnitPrice").val(result["unitPrice"]);
+                },
+                error: function(xhr, status, error) {
+                    console.log(xhr)
+                }
+            });
+        }
+
+        $("#DeleteButton").click(function(e) {
+            let params = new URLSearchParams(document.location.search);
+            let productId = params.get("id");
+
+            $.ajax({
+                url: "http://localhost:25774/api/products/" + productId,
+                type: "delete",
+                success: function(result, status, xhr) {
+                    window.location.href = "/Products";
+                },
+                error: function(xhr, status, error) {
+                    console.log(xhr);
+                }
+            });
+        });
+
+    });
+</script>
+    @section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
